@@ -75,7 +75,12 @@ def tt_global_crc_entry(entry):
     if flags & BATADV_TT_CLIENT_TEMP:
         return None
 
-    tmp_vid = struct.pack('!h', entry.vid) # equivalent to htons()
+    if entry.vid == -1:
+        vid = int('0000', 16)
+    else:
+        vid = entry.vid + int('8000', 16)
+
+    tmp_vid = struct.pack('!H', vid) # equivalent to htons()
     c = crc_update(CRC_INIT, tmp_vid)
 
     tmp_flags = struct.pack('H', flags & SYNCED_FLAGS)
