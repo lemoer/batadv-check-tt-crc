@@ -83,7 +83,7 @@ def tt_global_crc_entry(entry):
     tmp_vid = struct.pack('!H', vid) # equivalent to htons()
     c = crc_update(CRC_INIT, tmp_vid)
 
-    tmp_flags = struct.pack('H', flags & SYNCED_FLAGS)
+    tmp_flags = struct.pack('B', flags & SYNCED_FLAGS)
     c = crc_update(c, tmp_flags)
 
     tmp_client = parse_mac(entry.client)
