@@ -87,8 +87,9 @@ def tt_global_crc_entry(entry):
     c = crc_update(c, tmp_flags)
 
     tmp_client = parse_mac(entry.client)
+    #print((tmp_vid + tmp_flags + tmp_client).hex())
     c = crc_update(c, tmp_client)
-    print(tmp_client)
+    #print(":".join(re.findall('..',tmp_client.hex())), flags, "0x%x" % c)
 
     return crc_finalize(c)
 
