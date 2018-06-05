@@ -96,6 +96,7 @@ def tt_global_crc(records, orig, vid):
     # orig as a str
     c = 0
     official_crc = None
+    cnt_records = 0
 
     for record in records.split('\n'):
         entry = read_tt_global(record)
@@ -119,10 +120,11 @@ def tt_global_crc(records, orig, vid):
             # client is roaming or temp
             continue
 
+        cnt_records += 1
         c ^= tmp_crc
 
     #print("0x%x" % c)
-    return c, official_crc
+    return c, official_crc, cnt_records
 
 def unique(l):
     return list(set(l))
@@ -153,16 +155,20 @@ def get_vids(records, orig):
     return vids
 
 #for orig in [get_originators(records)[0]]:
+n = 0
 for orig in get_originators(records):
-    if orig != "22:02:c6:74:f8:c3":
-        continue
+    #if orig != "ba:a5:2a:91:ff:93":
+    #    continue
+    n += 1
+    #if n > 10:
+    #    break
     for vid in get_vids(records, orig):
-        locally_calculated, official = tt_global_crc(records, orig, vid)
+        locally_calculated, official, cnt = tt_global_crc(records, orig, vid)
         if locally_calculated != official:
-            print(orig, "%4d" % vid, "fail", "0x%x" % locally_calculated)
+            print('o:', orig, "%4d" % vid, "records:", cnt, "fail", "0x%x" % locally_calculated, "!=", "0x%x" % official)
             #print("0x%x" % official, "0x%x" % locally_calculated)
         else:
-            print(orig, "%4d" % vid, "ok", "0x%x" % locally_calculated)
+            print('o:',orig, "%4d" % vid, "records:", cnt,"ok", "0x%x" % locally_calculated)
 
 # print()
 # print(get_vids(records, '82:39:e1:58:ca:cb'))
