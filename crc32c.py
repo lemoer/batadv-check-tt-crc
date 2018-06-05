@@ -123,11 +123,11 @@ def crc_update(crc, data):
   else:
     buf = data
 
-  crc = crc ^ _MASK
+  crc = crc & _MASK
   for b in buf:
     table_index = (crc ^ b) & 0xff
     crc = (CRC_TABLE[table_index] ^ (crc >> 8)) & _MASK
-  return crc ^ _MASK
+  return crc & _MASK
 
 
 def crc_finalize(crc):
