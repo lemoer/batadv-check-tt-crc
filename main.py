@@ -93,27 +93,15 @@ def tt_global_crc_entry(entry):
 
     return crc_finalize(c)
 
-def tt_global_crc(records, orig, vid):
+def tt_global_crc2(entries):
     # orig as a str
     c = 0
     official_crc = None
     cnt_records = 0
 
-    for record in records.split('\n'):
-        entry = read_tt_global(record)
-
-        if entry.originator != orig:
-            continue
-
-        if entry.vid != vid:
-            continue
+    for entry in entries:
 
         official_crc = int(entry.crc, 16)
-
-        # print(entry)
-        # print(entry.client)
-        # print(parse_mac(entry.client))
-        # print(get_flag_repr(entry.flags))
 
         tmp_crc = tt_global_crc_entry(entry)
 
@@ -155,23 +143,24 @@ def get_vids(records, orig):
 
     return vids
 
-#for orig in [get_originators(records)[0]]:
 n = 0
-for orig in get_originators(records):
-    #if orig != "ba:a5:2a:91:ff:93":
-    #    continue
-    n += 1
-    #if n > 10:
-    #    break
-    for vid in get_vids(records, orig):
-        locally_calculated, official, cnt = tt_global_crc(records, orig, vid)
-        if locally_calculated != official:
-            print('o:', orig, "%4d" % vid, "records:", cnt, "fail", "0x%x" % locally_calculated, "!=", "0x%x" % official)
-            #print("0x%x" % official, "0x%x" % locally_calculated)
-        else:
-            print('o:',orig, "%4d" % vid, "records:", cnt,"ok", "0x%x" % locally_calculated)
+org_sorted = {}
 
-# print()
-# print(get_vids(records, '82:39:e1:58:ca:cb'))
-# print("0x%x" % tt_global_crc(records, "82:39:e1:58:ca:cb", -1))
-# print("0x%x" % tt_global_crc(records, "82:39:e1:58:ca:cb", 0))
+for record in records.split('\n'):
+    entry = read_tt_global(record)
+
+    key = (entry.originator, entry.vid)
+    if key not in org_sorted:
+        org_sorted[key] = []
+
+    org_sorted[key] += [entry]
+
+for key, entries in org_sorted.items():
+    orig, vid = key
+
+    locally_calculated, official, cnt = tt_global_crc2(entries)
+    if locally_calculated != official:
+        print('o:', orig, "%4d" % vid, "records:", cnt, "fail", "0x%x" % locally_calculated, "!=", "0x%x" % official)
+        #print("0x%x" % official, "0x%x" % locally_calculated)
+    else:
+        print('o:',orig, "%4d" % vid, "records:", cnt,"ok", "0x%x" % locally_calculated)
