@@ -159,9 +159,12 @@ for key, entries in org_sorted.items():
     orig, vid = key
 
     locally_calculated, official, cnt = tt_global_crc2(entries)
+    c = ""
+    if not '--omit-count' in sys.argv:
+        c = "records: " + str(cnt)
     if locally_calculated != official:
-        print('o:', orig, "%4d" % vid, "records:", cnt, "fail", "0x%x" % locally_calculated, "!=", "0x%x" % official)
+        print('o:', orig, "%4d" % vid,c, "fail", "calc says, should be 0x%x" % locally_calculated + ", but is", "0x%x" % official)
         #print("0x%x" % official, "0x%x" % locally_calculated)
     else:
         if not '--fail-only' in sys.argv:
-            print('o:',orig, "%4d" % vid, "records:", cnt,"ok", "0x%x" % locally_calculated)
+            print('o:',orig, "%4d" % vid, c,"ok", "0x%x" % locally_calculated)
