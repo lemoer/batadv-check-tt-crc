@@ -43,11 +43,11 @@ def read_tt_global(line):
     assert(m is not None)
 
     return TTGlobalEntry(
-        client = m[1],
-        vid = int(m[2]),
-        flags = m[3],
-        originator = m[5],
-        crc = m[7]
+        client = m.group(1),
+        vid = int(m.group(2)),
+        flags = m.group(3),
+        originator = m.group(5),
+        crc = m.group(7)
     )
 
 def parse_mac(mac_str):
