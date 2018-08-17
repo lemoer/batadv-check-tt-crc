@@ -163,4 +163,5 @@ for key, entries in org_sorted.items():
         print('o:', orig, "%4d" % vid, "records:", cnt, "fail", "0x%x" % locally_calculated, "!=", "0x%x" % official)
         #print("0x%x" % official, "0x%x" % locally_calculated)
     else:
-        print('o:',orig, "%4d" % vid, "records:", cnt,"ok", "0x%x" % locally_calculated)
+        if not '--fail-only' in sys.argv:
+            print('o:',orig, "%4d" % vid, "records:", cnt,"ok", "0x%x" % locally_calculated)
